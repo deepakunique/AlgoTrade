@@ -211,12 +211,12 @@ public class ParsingUtility {
 			
 		}
 
-		 t = s.beginTransaction();
+		// t = s.beginTransaction();
 		    for(OptionCalendarTrade o : ocList){
 		   	 
 		   	 s.saveOrUpdate(o);
 		    }
-		   t.commit();
+		 //  t.commit();
 	}
 
 

@@ -63,8 +63,14 @@ public class ShortBoxBuilder
     {
     	ShortBoxBuilder bc = new ShortBoxBuilder();
         Session s= bc.factory.openSession();
-        
-		
+    	executeShortBoxStrategy(s);
+    }
+
+
+
+	public static void executeShortBoxStrategy(Session s) {
+		System.out.println("Short Box strategy started ::");
+    	
         
         List<LiveRate> liveRateList = s.createQuery("from LiveRate").list();
         for(LiveRate liveRate : liveRateList){
@@ -130,7 +136,8 @@ public class ShortBoxBuilder
         }
         
         //updateLotSizeDifference(s,AppConstant.scripNames);
-    }
+        System.out.println("Short Box strategy completed ::");
+	}
     
 	
 }

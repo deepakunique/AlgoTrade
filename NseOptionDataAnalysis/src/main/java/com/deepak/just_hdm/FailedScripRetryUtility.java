@@ -24,11 +24,11 @@ import com.entity.Engine2;
  * Hello world!
  *
  */
-public class Algorithm 
+public class FailedScripRetryUtility 
 {
 	private SessionFactory factory = null;
 	
-	public Algorithm() {
+	public FailedScripRetryUtility() {
 		// TODO Auto-generated constructor stub
 		Configuration cg = new Configuration().configure("hibernate.cfg.xml");
 				 //Configuration config = new Configuration().configure("annotations/hibernate.cfg.xml");
@@ -37,10 +37,6 @@ public class Algorithm
         cg.addAnnotatedClass(OptionBean.class);
         cg.addAnnotatedClass(OptionCalendarTrade.class);
         cg.addAnnotatedClass(LiveRate.class);
-        cg.addAnnotatedClass(IronCondor.class);
-        cg.addAnnotatedClass(BoxSpread.class);
-        cg.addAnnotatedClass(ShortBox.class);
-        
         
         ServiceRegistryBuilder builder = new ServiceRegistryBuilder().applySettings(cg.getProperties());
          factory = cg.buildSessionFactory(builder.buildServiceRegistry());
@@ -54,22 +50,25 @@ public class Algorithm
     	long x =System.currentTimeMillis();
     	
     	
-    	Algorithm bc = new Algorithm();
+    	FailedScripRetryUtility bc = new FailedScripRetryUtility();
         Session s= bc.factory.openSession();
         int count = 0;
         List<String> failedScrip = new ArrayList<String>();
         List<String> successScrip = new ArrayList<String>();
         
         int index = 0;
-		for(String scripLot : AppConstant.scripLotSizeArray){
+        
+        
+        SQLQuery sq = s.createSQLQuery("from FailedScrip");
+    	
+		
+    	List<Object> spList = sq.list();
+    
+        
+    	for(Object scripLot : spList){
 			try{
-				/*if(++count > 20){
-					Thread.sleep(1000*20);
-					count =0;
-				}*/
-					
 				
-				StringTokenizer st = new StringTokenizer(scripLot,"|");
+				StringTokenizer st = new StringTokenizer(scripLot.toString(),"|");
 				String scripName = st.nextToken();
 				int lotSize = Integer.parseInt(st.nextToken());
 				getScripSeriesData(s, scripName, AppConstant.currentSeries, AppConstant.nextSeries, lotSize,failedScrip);
@@ -77,40 +76,19 @@ public class Algorithm
 			}
 			catch(Exception e){
 						
-					failedScrip.add(scripLot);
+					failedScrip.add(scripLot.toString());
 			}
 		}
 			
 		System.out.println("Failed Scrip Count ::" + failedScrip.size() );
 		
-		ListIterator<String> itr = failedScrip.listIterator();
-		int expCount =0;
-		while(itr.hasNext()){
-			
-			try{
-				StringTokenizer st = new StringTokenizer(itr.next(),"|");
-				String scripName = st.nextToken();
-				int lotSize = Integer.parseInt(st.nextToken());
-				getScripSeriesData(s, scripName, AppConstant.currentSeries, AppConstant.nextSeries, lotSize,failedScrip);
-				itr.remove();
-			}
-			catch(Exception e){
-				if(++expCount> 100)
-					break;
-				System.out.println("exception ::");
-			}
-		}
+		
 		
         updateLotSizeDifference(s,AppConstant.scripNames);
         System.out.println("Failed Scrip Count ::" + failedScrip.size() );
-        
-        
-        
+			
 		
-		ShortBoxBuilder.executeShortBoxStrategy(s);
-		BoxSpreadBuilder.executeBoxSpreadStartegy(s);
-		IronCondorBuilder.executeIronCondorStrategy(s);
-		
+	
 		System.out.println("Total time taken in seconds::" + (System.currentTimeMillis() - x)/1000);
 		
     }

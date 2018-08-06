@@ -63,10 +63,18 @@ public class BoxSpreadBuilder
     {
     	BoxSpreadBuilder bc = new BoxSpreadBuilder();
         Session s= bc.factory.openSession();
+        executeBoxSpreadStartegy(s);
         
+        //updateLotSizeDifference(s,AppConstant.scripNames);
+    }
+
+
+
+	public static void executeBoxSpreadStartegy(Session s) {
 		
-        
-        List<LiveRate> liveRateList = s.createQuery("from LiveRate ").list();
+		System.out.println("Box spread strategy started ::");
+		
+		List<LiveRate> liveRateList = s.createQuery("from LiveRate ").list();
         for(LiveRate liveRate : liveRateList){
         	int multiple =(int) Math.round((liveRate.getCurrentMktPrice()/liveRate.getLotSizeDifference()));
         	//double itm1 = (multiple -1)*liveRate.getLotSizeDifference();
@@ -128,9 +136,8 @@ public class BoxSpreadBuilder
         	t.commit();
         	}
         }
-        
-        //updateLotSizeDifference(s,AppConstant.scripNames);
-    }
+        System.out.println("Box spread strategy completed ::");
+	}
     
 	
 }

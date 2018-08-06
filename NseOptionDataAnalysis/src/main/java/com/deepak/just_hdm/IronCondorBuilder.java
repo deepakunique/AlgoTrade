@@ -24,11 +24,11 @@ import com.entity.Engine2;
  */
 
 
-public class StrategyBuilder 
+public class IronCondorBuilder 
 {
 	private SessionFactory factory = null;
 	
-	public StrategyBuilder() {
+	public IronCondorBuilder() {
 		// TODO Auto-generated constructor stub
 		Configuration cg = new Configuration().configure("hibernate.cfg.xml");
 				 //Configuration config = new Configuration().configure("annotations/hibernate.cfg.xml");
@@ -48,12 +48,20 @@ public class StrategyBuilder
 	
     public static void main( String[] args )
     {
-    	StrategyBuilder bc = new StrategyBuilder();
+    	IronCondorBuilder bc = new IronCondorBuilder();
         Session s= bc.factory.openSession();
         
-		
+        executeIronCondorStrategy(s);
         
-        List<LiveRate> liveRateList = s.createQuery("from LiveRate").list();
+        //updateLotSizeDifference(s,AppConstant.scripNames);
+    }
+
+
+
+	public static void executeIronCondorStrategy(Session s) {
+		System.out.println("Iron condor strategy started ::");
+		
+		List<LiveRate> liveRateList = s.createQuery("from LiveRate").list();
         for(LiveRate liveRate : liveRateList){
         	int multiple =(int) Math.round((liveRate.getCurrentMktPrice()/liveRate.getLotSizeDifference()));
         	double itm1 = (multiple -1)*liveRate.getLotSizeDifference();
@@ -109,9 +117,8 @@ public class StrategyBuilder
         	t.commit();
         	}
         }
-        
-        //updateLotSizeDifference(s,AppConstant.scripNames);
-    }
+        System.out.println("Iron condor strategy completed ::");
+	}
     
 	
 }
