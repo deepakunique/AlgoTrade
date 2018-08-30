@@ -15,6 +15,9 @@ public class LiveRate {
 	private double currentMktPrice;
 	private double lotSizeDifference;
 	private int lotsize;
+	private double marginLimit;
+	private double mwpl;
+	
 	
 	public int getId() {
 		return Id;
@@ -25,6 +28,18 @@ public class LiveRate {
 	
 	
 	
+	public double getMwpl() {
+		return mwpl;
+	}
+	public void setMwpl(double mwpl) {
+		this.mwpl = mwpl;
+	}
+	public double getMarginLimit() {
+		return marginLimit;
+	}
+	public void setMarginLimit(double marginLimit) {
+		this.marginLimit = marginLimit;
+	}
 	public int getLotsize() {
 		return lotsize;
 	}

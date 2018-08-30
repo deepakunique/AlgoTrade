@@ -7,9 +7,14 @@ import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
@@ -303,4 +308,140 @@ public class ParsingUtility {
 		}
 	}
 	
+	
+	 public static void getURLActionForHistoricalData(StringBuffer sb, String scripName,
+	    		String expiryDate,String optionType, double strikePrice,
+	    		String fromDate, String toDate) {
+			URLConnection connection;
+			BufferedReader br = null;
+			try {
+				//connection = new URL("https://www.nseindia.com/live_market/"
+					//	+ "dynaContent/live_watch/option_chain/optionKeys.jsp?symbolCode=-9999&symbol=NIFTY&symbol=BANKNIFTY&instrument=OPTIDX&date=-&segmentLink=17&segmentLink=17").openConnection();
+				
+				connection = new URL("https://www.nseindia.com/products/dynaContent/common/productsSymbolMapping.jsp?instrumentType=OPTSTK&symbol="+
+				scripName+"&expiryDate="+expiryDate+"&optionType="+optionType+"&strikePrice="+strikePrice+
+				"&dateRange=&fromDate="+fromDate+"&toDate="+toDate+"&segmentLink=9&symbolCount=").openConnection();
+				
+				connection.setDoOutput(true);
+				connection.setRequestProperty("Accept-Charset", "UTF-8");
+				connection.setRequestProperty("Referer", "https://www.nseindia.com/products/content/derivatives/equities/historical_fo.htm");
+				connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=" + "UTF-8");
+				
+				/*try {
+					
+				    connection.getOutputStream().write("".getBytes(charset));
+				}
+				finally {
+				    connection.getOutputStream().close();
+				}*/
+				String line="";
+				connection.setReadTimeout(6000);
+				InputStream response1 = connection.getInputStream();
+				br = new BufferedReader(new InputStreamReader(response1));
+				while ((line = br.readLine()) != null) {
+					sb.append(line+"\n");
+				}
+				//System.out.println(sb.toString());
+			} catch (MalformedURLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} finally{
+				
+				if(br!=null)
+					try {
+						br.close();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+			}
+		}
+	 
+	 public static void persistHistoryBean(Session s, StringBuffer sb, String seriesName,
+				Map<String, Map<String, OptionBean>> obMap,Set<Double> strikePriceLSet,Map<String,LiveRate> liveRateMap,int lotSize) {
+			Transaction t;
+			org.jsoup.nodes.Document document = Jsoup.parse(sb.toString());
+			org.jsoup.nodes.Element tableCMP = document.select("table").get(0);
+			org.jsoup.nodes.Element cmpElement = tableCMP.select("tr").get(0);
+			
+			
+			List<HistoricalData> hDList = new ArrayList<HistoricalData>();
+			
+			
+			Elements optionRows = tableCMP.select("tr");
+			
+			int rowSize = optionRows.size();
+			int rowCount =0;
+			
+			if (optionRows.size() < 4)
+				return;
+			
+			for(org.jsoup.nodes.Element tr :  optionRows){
+				
+				if(++rowCount<=2)
+					continue;
+				
+				Elements strikeRow = tr.select("td");
+				
+					int columnIndex= 0;
+					OptionBean ob = new OptionBean();
+					HistoricalData hs = new HistoricalData();
+					
+					String optionType = "CE";
+					Map<String, OptionBean> innerMap = new HashMap<String, OptionBean>();
+					
+					hs.setScripName(strikeRow.get(columnIndex++).childNodes().get(0).toString());
+				
+					
+					
+					String currentDate = strikeRow.get(columnIndex++).childNodes().get(0).childNodes().get(0).toString();
+					String expiryDate = strikeRow.get(columnIndex++).childNodes().get(1).childNodes().get(0).toString();
+					
+					hs.setCurrentDate(dateFormater(currentDate));
+					hs.setExpiryDate(dateFormater(expiryDate));
+					
+					hs.setOptionType(strikeRow.get(columnIndex++).childNodes().get(0).toString());
+					
+					hs.setStrikePrice(new Double(parseValueFromColumn(strikeRow, columnIndex++)));
+					hs.setOpen(new Double(parseValueFromColumn(strikeRow, columnIndex++)));
+					hs.setHigh(new Double(parseValueFromColumn(strikeRow, columnIndex++)));
+					hs.setLow(new Double(parseValueFromColumn(strikeRow, columnIndex++)));
+					hs.setClose(new Double(parseValueFromColumn(strikeRow, columnIndex++)));
+					hs.setLtp(new Double(parseValueFromColumn(strikeRow, columnIndex++)));
+					hs.setSettlePrice(new Double(parseValueFromColumn(strikeRow, columnIndex++)));
+					hs.setNoContracts(new Double(parseValueFromColumn(strikeRow, columnIndex++)));
+					columnIndex++;
+					columnIndex++;
+					
+					hs.setOi(new Double(parseValueFromColumn(strikeRow, columnIndex++)));
+					hs.setChangeInOi(new Double(parseValueFromColumn(strikeRow, columnIndex++)));
+					hs.setCmp(new Double(parseValueFromColumn(strikeRow, columnIndex++)));
+					
+					
+					hDList.add(hs);
+			}
+				
+	       t = s.beginTransaction();
+	        for(HistoricalData o : hDList){
+	       	 
+	       	 s.saveOrUpdate(o);
+	        }
+	       t.commit();
+		}
+	 
+	 private static Date dateFormater(String string) {
+			DateFormat format = new SimpleDateFormat("dd-MMM-yyy", Locale.ENGLISH);
+			Date date  = null;
+			try {
+				date = format.parse(string.trim());
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return date;
+		}
+		
 }

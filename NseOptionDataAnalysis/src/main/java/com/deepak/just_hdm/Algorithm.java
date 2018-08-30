@@ -40,6 +40,8 @@ public class Algorithm
         cg.addAnnotatedClass(IronCondor.class);
         cg.addAnnotatedClass(BoxSpread.class);
         cg.addAnnotatedClass(ShortBox.class);
+        cg.addAnnotatedClass(FutureArbitrage.class);
+        cg.addAnnotatedClass(FutureScripData.class);
         
         
         ServiceRegistryBuilder builder = new ServiceRegistryBuilder().applySettings(cg.getProperties());
@@ -106,10 +108,11 @@ public class Algorithm
         
         
         
-		
+        MarginUpdate.executeMarginUpdate(s);
 		ShortBoxBuilder.executeShortBoxStrategy(s);
 		BoxSpreadBuilder.executeBoxSpreadStartegy(s);
 		IronCondorBuilder.executeIronCondorStrategy(s);
+		
 		
 		System.out.println("Total time taken in seconds::" + (System.currentTimeMillis() - x)/1000);
 		
@@ -150,7 +153,6 @@ public class Algorithm
             	Transaction t = s.beginTransaction();
             	s.saveOrUpdate(lv);
             	t.commit();
-            	
             	
             	
         	} else{
