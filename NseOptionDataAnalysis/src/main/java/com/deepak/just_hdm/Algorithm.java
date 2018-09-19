@@ -99,12 +99,12 @@ public class Algorithm
 			catch(Exception e){
 				if(++expCount> 100)
 					break;
-				System.out.println("exception ::");
+				System.out.println("exception ::"); 
 			}
 		}
 		
         updateLotSizeDifference(s,AppConstant.scripNames);
-        System.out.println("Failed Scrip Count ::" + failedScrip.size() );
+        System.out.println("Failed Scrip Count ::" + failedScrip.size() +  " :::::"+failedScrip);
         
         
         

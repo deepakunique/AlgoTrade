@@ -4,8 +4,10 @@ public class AppConstant {
 	
 	
 	public static final double NAN = -999999;
-	public static final String currentSeries = "30AUG2018";
-	public static final String nextSeries = "27SEP2018";
+	public static final double FIXED_INTEREST_RATE =  6.0;
+	
+	public static final String currentSeries = "27SEP2018";
+	public static final String nextSeries = "25OCT2018";
 	public static final String scripNames[] = {"ACC",
 "ADANIENT",
 "ADANIPORTS",

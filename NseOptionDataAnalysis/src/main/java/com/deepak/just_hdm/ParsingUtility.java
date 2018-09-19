@@ -25,6 +25,9 @@ import org.hibernate.Transaction;
 import org.jsoup.Jsoup;
 import org.jsoup.select.Elements;
 
+import com.deepak.just_hdm.blackScholes.BlackScholesFormula;
+import com.deepak.just_hdm.blackScholes.OptionDetails;
+
 public class ParsingUtility {
 	public SessionFactory factory;
 
@@ -207,6 +210,16 @@ public class ParsingUtility {
 			
 			OptionCalendarTrade opt = populateOptionCalendarTradeBean(scripName, lotSize, callOptionType,
 					strikePrice, optionCurrentSeriesCall, optionNextSeriesCall);
+			
+		/*	BlackScholesFormula bc = new BlackScholesFormula();
+			
+			Date d = new Date();
+			int daysToExpire = Integer.parseInt(AppConstant.currentSeries.substring(0, 2)) - d.getDate();
+			
+			OptionDetails req = new OptionDetails(true, opt.getCmp(), opt.getStrikePrice(), 6/100.0, daysToExpire/365.0, opt.getCurrenSeriestIv());
+			//opt.setCurrentSeriesDelta(req.);
+			*/
+			
 			ocList.add(opt);
 			
 			 opt = populateOptionCalendarTradeBean(scripName, lotSize, putOptionType,

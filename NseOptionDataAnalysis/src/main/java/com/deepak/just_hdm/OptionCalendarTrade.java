@@ -33,7 +33,71 @@ public class OptionCalendarTrade {
 	private double rewardRiskTentative;
 	
 	
+	private double currentSeriesDelta;
+	private double currentSeriesTheta;
+	private double currentSeriesGamma;
+	private double currentSeriesVega;
 	
+	
+
+	private double nextSeriesDelta;
+	private double nextSeriesTheta;
+	private double nextSeriesGamma;
+	private double nextSeriesVega;
+	
+	
+	
+	
+	
+	
+	public double getCurrentSeriesDelta() {
+		return currentSeriesDelta;
+	}
+	public void setCurrentSeriesDelta(double currentSeriesDelta) {
+		this.currentSeriesDelta = currentSeriesDelta;
+	}
+	public double getCurrentSeriesTheta() {
+		return currentSeriesTheta;
+	}
+	public void setCurrentSeriesTheta(double currentSeriesTheta) {
+		this.currentSeriesTheta = currentSeriesTheta;
+	}
+	public double getCurrentSeriesGamma() {
+		return currentSeriesGamma;
+	}
+	public void setCurrentSeriesGamma(double currentSeriesGamma) {
+		this.currentSeriesGamma = currentSeriesGamma;
+	}
+	public double getCurrentSeriesVega() {
+		return currentSeriesVega;
+	}
+	public void setCurrentSeriesVega(double currentSeriesVega) {
+		this.currentSeriesVega = currentSeriesVega;
+	}
+	public double getNextSeriesDelta() {
+		return nextSeriesDelta;
+	}
+	public void setNextSeriesDelta(double nextSeriesDelta) {
+		this.nextSeriesDelta = nextSeriesDelta;
+	}
+	public double getNextSeriesTheta() {
+		return nextSeriesTheta;
+	}
+	public void setNextSeriesTheta(double nextSeriesTheta) {
+		this.nextSeriesTheta = nextSeriesTheta;
+	}
+	public double getNextSeriesGamma() {
+		return nextSeriesGamma;
+	}
+	public void setNextSeriesGamma(double nextSeriesGamma) {
+		this.nextSeriesGamma = nextSeriesGamma;
+	}
+	public double getNextSeriesVega() {
+		return nextSeriesVega;
+	}
+	public void setNextSeriesVega(double nextSeriesVega) {
+		this.nextSeriesVega = nextSeriesVega;
+	}
 	public double getCmp() {
 		return cmp;
 	}

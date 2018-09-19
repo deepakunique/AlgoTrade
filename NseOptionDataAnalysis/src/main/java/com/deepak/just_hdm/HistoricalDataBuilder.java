@@ -76,23 +76,38 @@ public class HistoricalDataBuilder
         List<String> failedScrip = new ArrayList<String>();
         List<String> successScrip = new ArrayList<String>();
         Map<Integer, String> dateMap = new HashMap<Integer, String>();
-        dateMap.put(-1, "01-12-2017");
-        dateMap.put(0, "01-01-2018");
-        dateMap.put(1, "25-01-2018");
-        dateMap.put(2, "22-02-2018");
-        dateMap.put(3, "26-03-2018");
-        dateMap.put(4, "28-04-2018");
-        dateMap.put(5, "31-05-2018");
-        dateMap.put(6, "28-06-2018");
-        dateMap.put(7, "26-07-2018");
-        dateMap.put(8, "30-08-2018");
+        dateMap.put(-1, "01-12-2016");
+        dateMap.put(0, "01-01-2017");
+        
+        dateMap.put(1, "25-01-2017");
+        dateMap.put(2, "23-02-2017");
+        dateMap.put(3, "30-03-2017");
+        dateMap.put(4, "27-04-2017");
+        dateMap.put(5, "25-05-2017");
+        dateMap.put(6, "29-06-2017");
+        dateMap.put(7, "27-07-2017");
+        dateMap.put(8, "31-08-2017");
+        dateMap.put(9, "28-09-2017");
+        dateMap.put(10, "26-10-2017");
+        dateMap.put(11, "30-11-2017");
+        dateMap.put(12, "28-12-2017");
+        
+        
+        dateMap.put(13, "25-01-2018");
+        dateMap.put(14, "22-02-2018");
+        dateMap.put(15, "26-03-2018");
+        dateMap.put(16, "28-04-2018");
+        dateMap.put(17, "31-05-2018");
+        dateMap.put(18, "28-06-2018");
+        dateMap.put(19, "26-07-2018");
+        dateMap.put(20, "30-08-2018");
         List <String> failCount = new ArrayList<String>();
 
         
-       for(int i = 1; i< 9; i++){
+       for(int i = 1; i< 21; i++){
     	   
     	   
-    	   for(double sp = 75.0; sp < 135; sp =sp+2.5  ){
+    	   for(double sp = 60.0; sp < 135; sp =sp+2.5  ){
            	
            	StringBuffer sb = new StringBuffer();
                
@@ -100,7 +115,7 @@ public class HistoricalDataBuilder
            	
            	try{
            		
-           		ParsingUtility.getURLActionForHistoricalData(sb, "FEDERALBNK", dateMap.get(i), "CE", sp, dateMap.get(i-2), dateMap.get(i-1));
+           		ParsingUtility.getURLActionForHistoricalData(sb, "FEDERALBNK", dateMap.get(i), "PE", sp, dateMap.get(i-2), dateMap.get(i-1));
                 
                 ParsingUtility.persistHistoryBean(s, sb, null, null, null, null, 0);
            	} catch(Exception e){
@@ -115,7 +130,7 @@ public class HistoricalDataBuilder
             
             try{
             	
-            	ParsingUtility.getURLActionForHistoricalData(sb, "FEDERALBNK", dateMap.get(i), "CE", sp, dateMap.get(i-1), dateMap.get(i));
+            	ParsingUtility.getURLActionForHistoricalData(sb, "FEDERALBNK", dateMap.get(i), "PE", sp, dateMap.get(i-1), dateMap.get(i));
                 ParsingUtility.persistHistoryBean(s, sb, null, null, null, null, 0);
             }catch(Exception e){
            		
@@ -130,7 +145,7 @@ public class HistoricalDataBuilder
        }
         
         
-		System.out.println("HistoryBuilder ended ::" + failedScrip.size() );
+		System.out.println("HistoryBuilder ended ::" + failCount.size() + " :::: " + failCount );
 		
 		
 		
